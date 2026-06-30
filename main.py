@@ -23,13 +23,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-async def load_proxies() -> list[str]:
-    async with httpx.AsyncClient(timeout=30) as client:
-        r = await client.get(PROXY_LIST_URL)
-        r.raise_for_status()
-
-    proxies = []
-
+def process_txt_proxies_list(r: httpx.Response) -> list[str]:
+    result = []
     for line in r.text.splitlines():
         p = line.strip()
 
@@ -38,10 +33,58 @@ async def load_proxies() -> list[str]:
 
         if not p.startswith("http"):
             p = "http://" + p
+        result.append(p)
+    return result
 
-        proxies.append(p)
 
-    return proxies
+def process_json_proxies_list(r: httpx.Response) -> list[str]:
+    data = r.json()
+    items = _extract_items(data)
+    return [_extract_proxy(item) for item in items if isinstance(item, dict) and _extract_proxy(item)]
+
+
+def _extract_items(data) -> list:
+    if isinstance(data, list):
+        return data
+    if isinstance(data, dict):
+        list_keys = ['data', 'proxies', 'results', 'result', 'list', 'proxy_list', 'proxies_list']
+        for key in list_keys:
+            if key in data and isinstance(data[key], list):
+                return data[key]
+        return [data]
+    return []
+
+
+def _extract_proxy(item: dict) -> str | None:
+    if 'ip' in item and 'port' in item:
+        protocol = item.get('protocol', 'http')
+        return f"{protocol}://{item['ip']}:{item['port']}"
+    proxy_fields = ['proxy', 'url', 'proxy_url', 'address', 'host']
+    for field in proxy_fields:
+        proxy = item.get(field)
+        if proxy and not proxy.startswith('#'):
+            if not proxy or proxy.startswith("#"):
+                continue
+            if not proxy.startswith("http"):
+                proxy = "http://" + proxy
+            return proxy
+
+    return None
+
+
+async def load_proxies() -> list[str]:
+    async with httpx.AsyncClient(timeout=30) as client:
+        r = await client.get(PROXY_LIST_URL)
+        r.raise_for_status()
+
+    if PROXY_LIST_URL.endswith(".txt"):
+        return process_txt_proxies_list(r=r)
+    elif PROXY_LIST_URL.endswith(".json"):
+        return process_json_proxies_list(r=r)
+    else:
+        logger.critical("VALUE ERROR: Invalid proxy list file extension is not supported!")
+        raise ValueError(f"Разрешение вашего файла с прокси не поддерживается текущим проектом!\n"
+                         f"Попробуйте найти файлы с разрешениями .json/.txt и попробуйте снова.")
 
 
 def make_client(proxy):
