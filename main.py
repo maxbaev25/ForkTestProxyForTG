@@ -52,7 +52,7 @@ def make_client(proxy):
     )
 
 
-async def check(proxy: str, idx: int):
+async def check(proxy: str, idx: int) -> tuple[str, float] | None:
     started = time.perf_counter()
 
     try:
@@ -60,10 +60,10 @@ async def check(proxy: str, idx: int):
             response = await client.get(URL)
 
         if response.status_code != 200:
-            return
+            return None
 
         if not response.json().get("ok"):
-            return
+            return None
 
         elapsed = time.perf_counter() - started
 
@@ -77,14 +77,14 @@ async def check(proxy: str, idx: int):
             httpx.ProxyError,
             httpx.ConnectError,
     ):
-        return
+        return None
 
     except Exception as exc:
         logger.error(f"[{idx}] {exc}")
-        return
+        return None
 
 
-async def run(proxies: list[str]):
+async def run(proxies: list[str]) -> list[tuple[str, float]]:
     sem = asyncio.Semaphore(CONCURRENCY)
 
     total = len(proxies)
@@ -104,7 +104,6 @@ async def run(proxies: list[str]):
 
     for t in asyncio.as_completed(tasks):
         res = await t
-
         done += 1
 
         if res:
@@ -125,10 +124,8 @@ async def main():
     logger.info(f"loaded: {len(proxies)}")
 
     res = await run(proxies)
-
     with open("working_proxies.txt", "w", encoding="utf-8") as f:
-        for p, _ in res:
-            f.write(p + "\n")
+        f.writelines(f"{p}\n" for p, _ in res)
 
     logger.info(f"working: {len(res)}")
 
