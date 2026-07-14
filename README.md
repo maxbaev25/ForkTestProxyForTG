@@ -19,19 +19,17 @@ pip install -r requirements.txt
 
 ## Настройка
 
-Создайте файл `.env` в корне проекта и добавьте следующие переменные:
+Установка кода как библиотеки:
 
-```env
-BOT_TOKEN=ваш_токен_бота
-PROXY_LIST_URL=https://ссылка_на_список_прокси
+```bash
+python -m build
+pip install .
 ```
-
-**Примечание:** Замените `BOT_TOKEN` на токен вашего Telegram-бота (получить у @BotFather), а `PROXY_LIST_URL` — на прямую ссылку на файл со списком прокси (по одному в строке, формат `ip:port` или `http://ip:port`).
 
 ## Использование
 
 ```bash
-python main.py
+proxy-checker PROXY_LIST_URL BOT_TOKEN
 ```
 
 Скрипт:
@@ -40,14 +38,7 @@ python main.py
 - Выводит прогресс в консоль
 - Сохраняет рабочие прокси в файл `working_proxies.txt`
 
-## Конфигурация
-
-В начале файла `main.py` можно изменить:
-
-```python
-TIMEOUT = 5       # таймаут запроса в секундах
-CONCURRENCY = 100 # количество одновременных проверок
-```
+**Примечание:** Замените `BOT_TOKEN` на токен вашего Telegram-бота (получить у @BotFather), а `PROXY_LIST_URL` — на прямую ссылку на файл со списком прокси (по одному в строке, формат `ip:port` или `http://ip:port`).
 
 ## Вывод
 

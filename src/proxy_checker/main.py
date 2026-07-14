@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from httpx_service import main
+from . httpx_service import main
 from settings import *
 
 if __name__ == "__main__":

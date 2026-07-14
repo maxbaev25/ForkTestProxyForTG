@@ -71,7 +71,7 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
-# Pyre type checker
+# Pyre type proxy_checker
 .pyre/
 
 # IDEs

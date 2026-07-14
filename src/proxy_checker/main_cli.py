@@ -1,20 +1,11 @@
-import os
-
 from dotenv import load_dotenv
 
 load_dotenv()
 
 import asyncio
-from datetime import datetime, timedelta
-from typing import Annotated, Optional
-import typer
+from typing import Annotated
 from typer import Typer, Option, Argument
-from rich.console import Console
-from rich.table import Table
-from rich import print as rprint
-
-from httpx_service import main
-from settings import *
+from .httpx_service import main
 
 app = Typer()
 
@@ -27,6 +18,9 @@ def main_cmd(
         proxy_list_url: Annotated[str, Argument(
             help="URL of the proxy list source"
         )],
+        token: Annotated[str, Argument(
+            help="Telegram bot token"
+        )],
         take: Annotated[int, Option(
             "-t", "--take", help="Number of proxies to fetch from the source for testing (default: all)"
         )] = None,
@@ -37,11 +31,18 @@ def main_cmd(
         top: Annotated[bool, Option(
             "--top", help="Sort working proxies by response time (fastest first). Default: no sorting"
         )] = False,
+        concurrency: Annotated[int, Option(
+            "-c", "--concurrency", help="Concurrency"
+        )] = 100,
+        timeout: Annotated[int, Option(
+            "--timeout", help="Timeout"
+        )] = 5,
 ):
-
+    bot_url = f"https://api.telegram.org/bot{token}/getMe"
     asyncio.run(main(
         proxy_list_url=proxy_list_url, take=take, limit=limit, top=top,
-        bot_url=BOT_URL, concurrency=CONCURRENCY, timeout=TIMEOUT))
+        bot_url=bot_url, concurrency=concurrency, timeout=timeout))
 
-if __name__ == '__main__':
+
+def main_func():
     app()

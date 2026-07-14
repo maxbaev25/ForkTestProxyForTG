@@ -14,7 +14,6 @@ logger = logging.getLogger(__name__)
 
 def process_txt_proxies_list(r: httpx.Response, take: int = None) -> list[str]:
     result = []
-    take -= 1
     for i, line in enumerate(r.text.splitlines()):
         p = line.strip()
         if not p or p.startswith("#"):
@@ -186,7 +185,7 @@ async def main(
     res = await run(proxies=proxies, limit=limit, concurrency=concurrency, timeout=timeout, bot_url=bot_url)
     if top:
         res = sorted(res, key=itemgetter(1))
-    with open("working_proxies.txt", "w", encoding="utf-8") as f:
+    with open("../../working_proxies.txt", "w", encoding="utf-8") as f:
         f.writelines(f"{p}\n" for p, _ in res)
 
     logger.info(f"working: {len(res)}")
