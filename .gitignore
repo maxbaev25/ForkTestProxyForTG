@@ -87,6 +87,5 @@ Thumbs.db
 # Project specific
 .env
 .env.*
-!.env.example
 working_proxies.txt
 *.log
