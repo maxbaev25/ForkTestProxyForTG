@@ -17,4 +17,4 @@ dependencies = [
 proxy-checker = "proxy_checker.main_cli:main_func"
 
 [tool.hatch.target.wheel]
-package = ["src/proxy_checker"]
+packages = ["src/proxy_checker"]
