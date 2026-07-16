@@ -32,16 +32,19 @@ def main_cmd(
             "--top", help="Sort working proxies by response time (fastest first). Default: no sorting"
         )] = False,
         concurrency: Annotated[int, Option(
-            "-c", "--concurrency", help="Concurrency"
+            "-c", "--concurrency", help="Concurrency of requests"
         )] = 100,
         timeout: Annotated[int, Option(
-            "--timeout", help="Timeout"
+            "--timeout", help="Timeout of every request in seconds"
         )] = 5,
+        path: Annotated[str, Option(
+            "-p", "--path", help="Filepath where to save working proxies list (default: current directory)"
+        )] = ".",
 ):
     bot_url = f"https://api.telegram.org/bot{token}/getMe"
     asyncio.run(main(
         proxy_list_url=proxy_list_url, take=take, limit=limit, top=top,
-        bot_url=bot_url, concurrency=concurrency, timeout=timeout))
+        bot_url=bot_url, concurrency=concurrency, timeout=timeout, file_path=path))
 
 
 def main_func():
