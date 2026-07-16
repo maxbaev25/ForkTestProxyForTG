@@ -81,8 +81,8 @@ async def load_proxies(proxy_list_url: str, take: int = None) -> list[str]:
         return process_json_proxies_list(r=r, take=take)
     else:
         logger.critical("VALUE ERROR: Invalid proxy list file extension is not supported!")
-        raise ValueError(f"Разрешение вашего файла с прокси не поддерживается текущим проектом!\n"
-                         f"Попробуйте найти файлы с разрешениями .json/.txt и попробуйте снова.")
+        raise ValueError("Разрешение вашего файла с прокси не поддерживается текущим проектом!\n"
+                         "Попробуйте найти файлы с разрешениями .json/.txt и попробуйте снова.")
 
 
 def make_client(proxy, timeout):
@@ -177,6 +177,7 @@ async def main(
         top: bool = False,
         timeout: int = 5,
         concurrency: int = 100,
+        file_path: str = ".",
 ):
     proxies = await load_proxies(proxy_list_url=proxy_list_url, take=take)
 
@@ -185,7 +186,8 @@ async def main(
     res = await run(proxies=proxies, limit=limit, concurrency=concurrency, timeout=timeout, bot_url=bot_url)
     if top:
         res = sorted(res, key=itemgetter(1))
-    with open("../../working_proxies.txt", "w", encoding="utf-8") as f:
+    # TODO: пользователь указывает путь в cli
+    with open(f"{file_path}\\working_proxies.txt", "w", encoding="utf-8") as f:
         f.writelines(f"{p}\n" for p, _ in res)
 
     logger.info(f"working: {len(res)}")
