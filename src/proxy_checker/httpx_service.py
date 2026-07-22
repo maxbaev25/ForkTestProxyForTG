@@ -186,7 +186,7 @@ async def main(
     res = await run(proxies=proxies, limit=limit, concurrency=concurrency, timeout=timeout, bot_url=bot_url)
     if top:
         res = sorted(res, key=itemgetter(1))
-    # TODO: пользователь указывает путь в cli
+
     with open(f"{file_path}\\working_proxies.txt", "w", encoding="utf-8") as f:
         f.writelines(f"{p}\n" for p, _ in res)
 
