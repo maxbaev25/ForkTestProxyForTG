@@ -190,4 +190,7 @@ async def main(
     with open(f"{file_path}\\working_proxies.txt", "w", encoding="utf-8") as f:
         f.writelines(f"{p}\n" for p, _ in res)
 
-    logger.info(f"working: {len(res)}")
+    working_proxies_len = len(res)
+
+    logger.info(f"working: {working_proxies_len}")
+    return working_proxies_len
