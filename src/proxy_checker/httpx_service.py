@@ -192,5 +192,6 @@ async def main(
 
     working_proxies_len = len(res)
 
+    logger.info("Proxies checking process completed")
     logger.info(f"working: {working_proxies_len}")
     return working_proxies_len
