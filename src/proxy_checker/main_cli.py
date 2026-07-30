@@ -15,11 +15,11 @@ app = Typer()
     help="Allows to get working proxy list on your Telegram bot from proxy list URL",
 )
 def main_cmd(
-        proxy_list_url: Annotated[str, Argument(
-            help="URL of the proxy list source"
-        )],
         token: Annotated[str, Argument(
             help="Telegram bot token"
+        )],
+        proxy_list_url: Annotated[str, Argument(
+            help="URL of the proxy list source"
         )],
         take: Annotated[int, Option(
             "-t", "--take", help="Number of proxies to fetch from the source for testing (default: all)"
