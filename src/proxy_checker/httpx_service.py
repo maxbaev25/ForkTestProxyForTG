@@ -187,7 +187,7 @@ async def main(
     if top:
         res = sorted(res, key=itemgetter(1))
 
-    with open(f"{file_path}\\working_proxies.txt", "w", encoding="utf-8") as f:
+    with open(f"{file_path}/working_proxies.txt", "w", encoding="utf-8") as f:
         f.writelines(f"{p}\n" for p, _ in res)
 
     working_proxies_len = len(res)
